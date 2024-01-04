@@ -1,22 +1,26 @@
 import {
   Table,
-  TableHeader,
-  TableColumnHeaderCell,
   TableBody,
-  TableRow,
   TableCell,
+  TableColumnHeaderCell,
+  TableHeader,
+  TableRow,
 } from "@radix-ui/themes";
-import React from "react";
-import IssueStatusBadge from "../components/IssueStatusBadge";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+
+import Link from "../../components/Link";
+
+import prisma from "@/prisma/client";
+import IssueStatusBadge from "../../components/IssueStatusBadge";
 import IssueActions from "./IssueActions";
 
-const LoadingIssuesPage = () => {
-  const issues = [1, 2, 3, 4, 5];
+
+const IssuesPage = async () => {
+  const issues = await prisma.issue.findMany();
+
   return (
     <div>
       <IssueActions />
+
       <Table.Root variant="surface">
         <TableHeader>
           <Table.Row>
@@ -31,18 +35,20 @@ const LoadingIssuesPage = () => {
         </TableHeader>
         <TableBody>
           {issues.map((issues) => (
-            <TableRow key={issues}>
+            <TableRow key={issues.id}>
               <TableCell>
-                <Skeleton></Skeleton>
+                <Link href={`/issues/${issues.id}`}>
+                {issues.title}
+                </Link>
                 <div className="block md:hidden">
-                  <Skeleton />
+                  <IssueStatusBadge status={issues.status}></IssueStatusBadge>
                 </div>
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                <Skeleton />
+                <IssueStatusBadge status={issues.status}></IssueStatusBadge>
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                <Skeleton />
+                {issues.createdAt.toDateString()}
               </TableCell>
             </TableRow>
           ))}
@@ -52,4 +58,7 @@ const LoadingIssuesPage = () => {
   );
 };
 
-export default LoadingIssuesPage;
+export const dynamic = 'force-dynamic';
+
+
+export default IssuesPage;

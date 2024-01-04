@@ -1,26 +1,22 @@
 import {
   Table,
-  TableBody,
-  TableCell,
-  TableColumnHeaderCell,
   TableHeader,
+  TableColumnHeaderCell,
+  TableBody,
   TableRow,
+  TableCell,
 } from "@radix-ui/themes";
-
-import Link from "../components/Link";
-
-import prisma from "@/prisma/client";
-import IssueStatusBadge from "../components/IssueStatusBadge";
+import React from "react";
+import IssueStatusBadge from "../../components/IssueStatusBadge";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import IssueActions from "./IssueActions";
 
-
-const IssuesPage = async () => {
-  const issues = await prisma.issue.findMany();
-
+const LoadingIssuesPage = () => {
+  const issues = [1, 2, 3, 4, 5];
   return (
     <div>
       <IssueActions />
-
       <Table.Root variant="surface">
         <TableHeader>
           <Table.Row>
@@ -35,20 +31,18 @@ const IssuesPage = async () => {
         </TableHeader>
         <TableBody>
           {issues.map((issues) => (
-            <TableRow key={issues.id}>
+            <TableRow key={issues}>
               <TableCell>
-                <Link href={`/issues/${issues.id}`}>
-                {issues.title}
-                </Link>
+                <Skeleton></Skeleton>
                 <div className="block md:hidden">
-                  <IssueStatusBadge status={issues.status}></IssueStatusBadge>
+                  <Skeleton />
                 </div>
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                <IssueStatusBadge status={issues.status}></IssueStatusBadge>
+                <Skeleton />
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                {issues.createdAt.toDateString()}
+                <Skeleton />
               </TableCell>
             </TableRow>
           ))}
@@ -58,7 +52,4 @@ const IssuesPage = async () => {
   );
 };
 
-export const dynamic = 'force-dynamic';
-
-
-export default IssuesPage;
+export default LoadingIssuesPage;
